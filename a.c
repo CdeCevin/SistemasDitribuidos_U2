@@ -93,7 +93,7 @@ int main() {
     // Arreglo para guardar el centroide más cercano a cada fila
     int asignaciones[SIZE][2];
 
-    printf("\nAsignación de filas al centroide más cercano:\n");
+    printf("\nAsignacion de filas al centroide mas cercano:\n");
 
     for (i = 0; i < SIZE; i++) {
         float min_dist = calcular_distancia(BD[i], centroide[0]);
