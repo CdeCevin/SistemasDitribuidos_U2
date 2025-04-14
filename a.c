@@ -1,10 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 #define DIM 20
 #define T 8
 #define K 3
+
+// Función para calcular la distancia euclidiana entre dos vectores de tamaño DIM
+float calcular_distancia(float *fila, float *centroide) {
+    float distancia = 0.0;
+    for (int i = 0; i < DIM; i++) {
+        float diff = fila[i] - centroide[i];
+        distancia += diff * diff;
+    }
+    return sqrt(distancia);
+}
 
 int main() {
     int i, j, SIZE;
@@ -60,13 +71,23 @@ int main() {
             centroide[i][j] = BD[idx][j];
 
         // Imprimir centroide
-        printf("Centroide %d tomado de fila %d: (", i+1, idx);
+        printf("Centroide %d tomado de fila %d: (", i + 1, idx);
         for (j = 0; j < DIM; j++) {
             printf("%.2f", centroide[i][j]);
             if (j < DIM - 1)
                 printf(" ");
         }
         printf(")\n");
+    }
+
+    // Calcular distancias euclidianas
+    printf("\nDistancias Euclidianas:\n");
+    for (i = 0; i < SIZE; i++) {
+        printf("Fila %d:\n", i);
+        for (int c = 0; c < K; c++) {
+            float dist = calcular_distancia(BD[i], centroide[c]); // Calcular distancia euclidiana de la fila i al centroide c
+            printf("  Distancia al centroide %d: %.2f\n", c + 1, dist);
+        }
     }
 
     // Liberar memoria
