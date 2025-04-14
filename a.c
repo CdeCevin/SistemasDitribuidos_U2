@@ -85,9 +85,32 @@ int main() {
     for (i = 0; i < SIZE; i++) {
         printf("Fila %d:\n", i);
         for (int c = 0; c < K; c++) {
-            float dist = calcular_distancia(BD[i], centroide[c]); // Calcular distancia euclidiana de la fila i al centroide c
+            float dist = calcular_distancia(BD[i], centroide[c]);
             printf("  Distancia al centroide %d: %.2f\n", c + 1, dist);
         }
+    }
+
+    // Arreglo para guardar el centroide más cercano a cada fila
+    int asignaciones[SIZE][2];
+
+    printf("\nAsignación de filas al centroide más cercano:\n");
+
+    for (i = 0; i < SIZE; i++) {
+        float min_dist = calcular_distancia(BD[i], centroide[0]);
+        int centroide_mas_cercano = 0;
+
+        for (int c = 1; c < K; c++) {
+            float dist = calcular_distancia(BD[i], centroide[c]);
+            if (dist < min_dist) {
+                min_dist = dist;
+                centroide_mas_cercano = c;
+            }
+        }
+
+        asignaciones[i][0] = centroide_mas_cercano + 1; // +1 por legibilidad
+        asignaciones[i][1] = i;
+
+        printf("(Fila: %d,Centroide: %d)\n", asignaciones[i][1], asignaciones[i][0]);
     }
 
     // Liberar memoria
