@@ -10,7 +10,7 @@ int main() {
     float **BD;
     scanf("%d",&SIZE);
 
-    BD = (float **)malloc(sizeof(float *)*SIZE); 
+    BD = (float **)malloc(sizeof(float *)*SIZE); //Alojando memoria para SIZE filas en la matriz BD
     for(i=0;i<SIZE;i++)
         BD[i] = (float *)malloc(sizeof(float)*DIM); //aloja memoria para cada fila de la matriz BD
 
