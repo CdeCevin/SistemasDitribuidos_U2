@@ -6,24 +6,34 @@
 
 
 int main() {
-    int i,j,SIZE;
+    int i, j, SIZE;
     float **BD;
-    scanf("%d",&SIZE);
 
-    BD = (float **)malloc(sizeof(float *)*SIZE); //Alojando memoria para SIZE filas en la matriz BD
-    for(i=0;i<SIZE;i++)
-        BD[i] = (float *)malloc(sizeof(float)*DIM); //aloja memoria para cada fila de la matriz BD
+    scanf("%d", &SIZE);
 
-    for(i=0;i<SIZE;i++)
-        for(j=0;j<DIM;j++)
-            scanf("%f",&(BD[i][j]));
-    
-    printf("%d\n",SIZE);
-    for(i=0;i<SIZE;i++)
-    {
-        for(j=0;j<DIM;j++)
-            printf("%.2f ",BD[i][j]);
-        printf("\n");
+    BD = (float **)malloc(sizeof(float *) * SIZE);
+    for (i = 0; i < SIZE; i++)
+        BD[i] = (float *)malloc(sizeof(float) * DIM);
+
+    for (i = 0; i < SIZE; i++)
+        for (j = 0; j < DIM; j++)
+            scanf("%f", &BD[i][j]);
+
+    printf("%d\n", SIZE);
+    for (i = 0; i < SIZE; i++) {
+        printf("(");
+        for (j = 0; j < DIM; j++) {
+            printf("%.2f", BD[i][j]);
+            if (j < DIM - 1)
+                printf(" ");
+        }
+        printf(")\n");
     }
+
+    // Liberar memoria
+    for (i = 0; i < SIZE; i++)
+        free(BD[i]);
+    free(BD);
+
     return 0;
 }
