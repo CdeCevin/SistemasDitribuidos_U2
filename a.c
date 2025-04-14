@@ -1,6 +1,9 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #define DIM 20
+#define T 8
+#define K 3
+
 
 int main() {
     int i,j,SIZE;
