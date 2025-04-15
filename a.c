@@ -4,10 +4,9 @@
 #include <math.h>
 
 #define DIM 20
-#define T 8
 #define K 3
 
-// Función para calcular la distancia euclidiana entre dos vectores de tamaño DIM
+// Función para calcular la distancia euclidiana entre dos vectores
 float calcular_distancia(float *fila, float *centroide) {
     float distancia = 0.0;
     for (int i = 0; i < DIM; i++) {
@@ -34,7 +33,7 @@ int main() {
         for (j = 0; j < DIM; j++)
             scanf("%f", &BD[i][j]);
 
-    // Imprimir matriz con índices y paréntesis
+    // Imprimir matriz con índices
     printf("%d\n", SIZE);
     for (i = 0; i < SIZE; i++) {
         printf("%d(", i);
@@ -54,7 +53,7 @@ int main() {
     for (i = 0; i < K; i++)
         centroide[i] = (float *)malloc(sizeof(float) * DIM);
 
-    // Seleccionar K filas aleatorias únicas
+    // Seleccionar K filas aleatorias únicas como centroides
     int usados[SIZE];
     for (i = 0; i < SIZE; i++)
         usados[i] = 0;
@@ -66,79 +65,102 @@ int main() {
         } while (usados[idx]);
         usados[idx] = 1;
 
-        // Copiar fila como centroide
         for (j = 0; j < DIM; j++)
             centroide[i][j] = BD[idx][j];
 
-        // Imprimir centroide
         printf("Centroide %d tomado de fila %d: (", i + 1, idx);
         for (j = 0; j < DIM; j++) {
             printf("%.2f", centroide[i][j]);
-            if (j < DIM - 1)
-                printf(" ");
+            if (j < DIM - 1) printf(" ");
         }
         printf(")\n");
     }
 
-    // Calcular distancias euclidianas
-    printf("\nDistancias Euclidianas:\n");
-    for (i = 0; i < SIZE; i++) {
-        printf("Fila %d:\n", i);
-        for (int c = 0; c < K; c++) {
-            float dist = calcular_distancia(BD[i], centroide[c]);
-            printf("  Distancia al centroide %d: %.2f\n", c + 1, dist);
+    // Asignar cada fila a su centroide más cercano
+    int **asignaciones = (int **)malloc(sizeof(int *) * SIZE);
+    for (i = 0; i < SIZE; i++)
+        asignaciones[i] = (int *)malloc(sizeof(int) * 2); // [0]=centroide, [1]=fila
+
+    int *asignaciones_previas = (int *)malloc(sizeof(int) * SIZE);
+    for (i = 0; i < SIZE; i++)
+        asignaciones_previas[i] = -1; // valor imposible al inicio
+
+    int cambio, iter = 1;
+
+    do {
+        cambio = 0;
+        printf("\nIteracion %d\n", iter++);
+
+        // Copiar asignaciones actuales a previas
+        for (i = 0; i < SIZE; i++)
+            asignaciones_previas[i] = asignaciones[i][0];
+
+        // Asignar filas a centroides
+        for (i = 0; i < SIZE; i++) {
+            float minDist = calcular_distancia(BD[i], centroide[0]);
+            int minIdx = 1;
+
+            for (int c = 1; c < K; c++) {
+                float dist = calcular_distancia(BD[i], centroide[c]);
+                if (dist < minDist) {
+                    minDist = dist;
+                    minIdx = c + 1;
+                }
+            }
+
+            asignaciones[i][0] = minIdx;
+            asignaciones[i][1] = i;
+
+            if (asignaciones[i][0] != asignaciones_previas[i])
+                cambio = 1;
+
+            printf("Fila %d asignada al centroide %d (distancia: %.2f)\n", i, minIdx, minDist);
         }
-    }
 
-    // Arreglo para guardar el centroide más cercano a cada fila
-    int asignaciones[SIZE][2];
+        if (cambio)
+            printf("¡Hubo cambios en esta iteracion!\n");
 
-    printf("\nAsignación de filas al centroide más cercano:\n");
+        // Recalcular centroides
+        printf("Actualizando centroides...\n");
+        for (int c = 1; c <= K; c++) {
+            float suma[DIM] = {0};
+            int count = 0;
 
-    for (i = 0; i < SIZE; i++) {
-        float min_dist = calcular_distancia(BD[i], centroide[0]);
-        int centroide_mas_cercano = 0;
+            for (i = 0; i < SIZE; i++) {
+                if (asignaciones[i][0] == c) {
+                    for (j = 0; j < DIM; j++) {
+                        suma[j] += BD[asignaciones[i][1]][j];
+                    }
+                    count++;
+                }
+            }
 
-        for (int c = 1; c < K; c++) {
-            float dist = calcular_distancia(BD[i], centroide[c]);
-            if (dist < min_dist) {
-                min_dist = dist;
-                centroide_mas_cercano = c;
+            if (count > 0) {
+                for (j = 0; j < DIM; j++) {
+                    centroide[c - 1][j] = suma[j] / count;
+                }
+
+                printf("Centroide %d actualizado: (", c);
+                for (j = 0; j < DIM; j++) {
+                    printf("%.2f", centroide[c - 1][j]);
+                    if (j < DIM - 1) printf(" ");
+                }
+                printf(")\n");
             }
         }
 
-        asignaciones[i][0] = centroide_mas_cercano + 1; // +1 por legibilidad
-        asignaciones[i][1] = i;
+    } while (cambio);
 
-        printf("(Fila: %d,Centroide: %d)\n", asignaciones[i][1], asignaciones[i][0]);
-
-               //ver todas las filas por centroide 
-
-
-
-    }
-    printf("\nFilas agrupadas por centroide:\n");
-    for (int c = 1; c <= K; c++) {
-        printf("Centroide %d: ", c);
-        for (int i = 0; i < SIZE; i++) {
-            if (asignaciones[i][0] == c) {
-                printf("%d ", asignaciones[i][1]);
-            }
-        }
-        printf("\n");
-    }
-    
-    printf("Filas asociadas a centroide 1: ");
-    for (int i = 0; i < SIZE; i++) {
-        if (asignaciones[i][0] == 1) {
-            printf(" %d ", asignaciones[i][1]);
-        }
-    }
+    printf("\nListoke! No hubo mas cambios en asignaciones.\n");
 
     // Liberar memoria
-    for (i = 0; i < SIZE; i++)
+    for (i = 0; i < SIZE; i++) {
         free(BD[i]);
+        free(asignaciones[i]);
+    }
     free(BD);
+    free(asignaciones);
+    free(asignaciones_previas);
 
     for (i = 0; i < K; i++)
         free(centroide[i]);
