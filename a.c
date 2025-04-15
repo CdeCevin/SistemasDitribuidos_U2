@@ -93,7 +93,7 @@ int main() {
     // Arreglo para guardar el centroide más cercano a cada fila
     int asignaciones[SIZE][2];
 
-    printf("\nAsignacion de filas al centroide mas cercano:\n");
+    printf("\nAsignación de filas al centroide más cercano:\n");
 
     for (i = 0; i < SIZE; i++) {
         float min_dist = calcular_distancia(BD[i], centroide[0]);
@@ -111,6 +111,28 @@ int main() {
         asignaciones[i][1] = i;
 
         printf("(Fila: %d,Centroide: %d)\n", asignaciones[i][1], asignaciones[i][0]);
+
+               //ver todas las filas por centroide 
+
+
+
+    }
+    printf("\nFilas agrupadas por centroide:\n");
+    for (int c = 1; c <= K; c++) {
+        printf("Centroide %d: ", c);
+        for (int i = 0; i < SIZE; i++) {
+            if (asignaciones[i][0] == c) {
+                printf("%d ", asignaciones[i][1]);
+            }
+        }
+        printf("\n");
+    }
+    
+    printf("Filas asociadas a centroide 1: ");
+    for (int i = 0; i < SIZE; i++) {
+        if (asignaciones[i][0] == 1) {
+            printf(" %d ", asignaciones[i][1]);
+        }
     }
 
     // Liberar memoria
