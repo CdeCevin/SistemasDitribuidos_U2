@@ -6,7 +6,6 @@
 #define DIM 20
 #define K 3
 
-// Función para calcular la distancia euclidiana entre dos vectores
 float calcular_distancia(float *fila, float *centroide) {
     float distancia = 0.0;
     for (int i = 0; i < DIM; i++) {
@@ -20,40 +19,24 @@ int main() {
     int i, j, SIZE;
     float **BD;
 
-    // Leer tamaño
+    clock_t inicio = clock(); // Comenzar medición de tiempo
+
     scanf("%d", &SIZE);
 
-    // Reservar memoria para la matriz BD (SIZE x DIM)
     BD = (float **)malloc(sizeof(float *) * SIZE);
     for (i = 0; i < SIZE; i++)
         BD[i] = (float *)malloc(sizeof(float) * DIM);
 
-    // Leer datos
     for (i = 0; i < SIZE; i++)
         for (j = 0; j < DIM; j++)
             scanf("%f", &BD[i][j]);
 
-    // Imprimir matriz con índices
-    printf("%d\n", SIZE);
-    for (i = 0; i < SIZE; i++) {
-        printf("%d(", i);
-        for (j = 0; j < DIM; j++) {
-            printf("%.2f", BD[i][j]);
-            if (j < DIM - 1)
-                printf(" ");
-        }
-        printf(")\n");
-    }
-
-    // Inicializar semilla aleatoria
     srand(time(NULL));
 
-    // Reservar memoria para los centroides (K x DIM)
     float **centroide = (float **)malloc(sizeof(float *) * K);
     for (i = 0; i < K; i++)
         centroide[i] = (float *)malloc(sizeof(float) * DIM);
 
-    // Seleccionar K filas aleatorias únicas como centroides
     int usados[SIZE];
     for (i = 0; i < SIZE; i++)
         usados[i] = 0;
@@ -67,35 +50,24 @@ int main() {
 
         for (j = 0; j < DIM; j++)
             centroide[i][j] = BD[idx][j];
-
-        printf("Centroide %d tomado de fila %d: (", i + 1, idx);
-        for (j = 0; j < DIM; j++) {
-            printf("%.2f", centroide[i][j]);
-            if (j < DIM - 1) printf(" ");
-        }
-        printf(")\n");
     }
 
-    // Asignar cada fila a su centroide más cercano
     int **asignaciones = (int **)malloc(sizeof(int *) * SIZE);
     for (i = 0; i < SIZE; i++)
-        asignaciones[i] = (int *)malloc(sizeof(int) * 2); // [0]=centroide, [1]=fila
+        asignaciones[i] = (int *)malloc(sizeof(int) * 2);
 
     int *asignaciones_previas = (int *)malloc(sizeof(int) * SIZE);
     for (i = 0; i < SIZE; i++)
-        asignaciones_previas[i] = -1; // valor imposible al inicio
+        asignaciones_previas[i] = -1;
 
-    int cambio, iter = 1;
+    int cambio;
 
     do {
         cambio = 0;
-        printf("\nIteracion %d\n", iter++);
 
-        // Copiar asignaciones actuales a previas
         for (i = 0; i < SIZE; i++)
             asignaciones_previas[i] = asignaciones[i][0];
 
-        // Asignar filas a centroides
         for (i = 0; i < SIZE; i++) {
             float minDist = calcular_distancia(BD[i], centroide[0]);
             int minIdx = 1;
@@ -113,15 +85,8 @@ int main() {
 
             if (asignaciones[i][0] != asignaciones_previas[i])
                 cambio = 1;
-
-            printf("Fila %d asignada al centroide %d (distancia: %.2f)\n", i, minIdx, minDist);
         }
 
-        if (cambio)
-            printf("¡Hubo cambios en esta iteracion!\n");
-
-        // Recalcular centroides
-        printf("Actualizando centroides...\n");
         for (int c = 1; c <= K; c++) {
             float suma[DIM] = {0};
             int count = 0;
@@ -139,21 +104,21 @@ int main() {
                 for (j = 0; j < DIM; j++) {
                     centroide[c - 1][j] = suma[j] / count;
                 }
-
-                printf("Centroide %d actualizado: (", c);
-                for (j = 0; j < DIM; j++) {
-                    printf("%.2f", centroide[c - 1][j]);
-                    if (j < DIM - 1) printf(" ");
-                }
-                printf(")\n");
             }
         }
 
     } while (cambio);
 
-    printf("\nListoke! No hubo mas cambios en asignaciones.\n");
+    clock_t fin = clock(); // Fin de medición
+    
+    for (i = 0; i < SIZE; i++) {
+        printf("%d\n", asignaciones[i][0]);
+    }
 
-    // Liberar memoria
+    
+    double tiempo = (double)(fin - inicio) / CLOCKS_PER_SEC;
+    printf("Tiempo de ejecucion: %.4f segundos\n", tiempo);
+
     for (i = 0; i < SIZE; i++) {
         free(BD[i]);
         free(asignaciones[i]);
