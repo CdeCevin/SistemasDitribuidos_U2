@@ -82,30 +82,43 @@ int main() {
     // Algoritmo principal de K-means
     do {
         cambio = 0;
-
         // Guardar asignaciones previas
         for (i = 0; i < SIZE; i++)
             asignaciones_previas[i] = asignaciones[i][0];
 
-        // Asignar cada elemento al centroide más cercano
-        for (i = 0; i < SIZE; i++) {
-            float minDist = calcular_distancia(BD[i], centroide[0]);
-            int minIdx = 1;
+        #pragma omp parallel
+        {
+            int tid = omp_get_thread_num();
+            int nthreads = omp_get_num_threads();
+            int chunk = SIZE / nthreads;
+            int ini = tid * chunk;
+            int fin = (tid == nthreads - 1) ? SIZE : ini + chunk;
 
-            for (int c = 1; c < K; c++) {
-                float dist = calcular_distancia(BD[i], centroide[c]);
-                if (dist < minDist) {
-                    minDist = dist;
-                    minIdx = c + 1;
+            int cambio_local = 0;
+
+            for (int i = ini; i < fin; i++) {
+                float minDist = calcular_distancia(BD[i], centroide[0]);
+                int minIdx = 1;
+
+                for (int c = 1; c < K; c++) {
+                    float dist = calcular_distancia(BD[i], centroide[c]);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        minIdx = c + 1;
+                    }
                 }
+
+                asignaciones[i][0] = minIdx;
+                asignaciones[i][1] = i;
+
+                if (asignaciones[i][0] != asignaciones_previas[i])
+                    cambio_local = 1;
             }
 
-            asignaciones[i][0] = minIdx; // Número del clúster (1 a K)
-            asignaciones[i][1] = i;      // Índice del elemento
-
-            // Si la asignación cambió respecto a la iteración anterior
-            if (asignaciones[i][0] != asignaciones_previas[i])
+            if (cambio_local) {
+                #pragma omp atomic write
                 cambio = 1;
+            }
         }
 
         // Recalcular los centroides como el promedio de los elementos asignados a cada uno
