@@ -88,12 +88,19 @@ int main() {
 
         #pragma omp parallel
         {
-            int tid = omp_get_thread_num();
-            int nthreads = omp_get_num_threads();
-            int chunk = SIZE / nthreads;
-            int ini = tid * chunk;
-            int fin = (tid == nthreads - 1) ? SIZE : ini + chunk;
+            int id = omp_get_thread_num();
+            int num_threads = omp_get_num_threads();
+            int elementos_por_hilo = SIZE / num_threads;
+            int inicio = elementos_por_hilo * id;
+            int fin;
+             = (id == nthreads - 1) ? SIZE : ini + chunk;
+            if(id == num_threads-1){
+                fin = SIZE;
+            }
+            else{
+                fin = inicio + elementos_por_hilo;
 
+            }
             int cambio_local = 0;
 
             for (int i = ini; i < fin; i++) {
