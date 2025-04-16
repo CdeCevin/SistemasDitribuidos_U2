@@ -27,7 +27,7 @@ int main() {
     clock_t inicio = clock(); // Comenzar medición de tiempo de ejecución
 
     
-
+    omp_set_dynamic(0);
     // Configura el número de hilos para la paralelización
     omp_set_num_threads(T);
 
