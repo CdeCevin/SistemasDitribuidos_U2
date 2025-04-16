@@ -109,32 +109,37 @@ int main() {
         }
 
         // Recalcular los centroides como el promedio de los elementos asignados a cada uno
-        #pragma omp parallel 
+
+
+    for (int c = 1; c <= K; c++) {
+        float suma[DIM] = {0};
+        int count = 0;
+
+        #pragma omp parallel
         {
-            int id = omp_get_thread_num(); // ID del hilo
-            int total_hilos = omp_get_num_threads(); // Total de hilos activos
-            
-            for (int c = 1; c <= K; c++) {
-                float suma[DIM] = {0}; // Suma acumulada para cada dimensión
-                int count = 0;         // Número de elementos en el clúster
-    
-                for (i = 0; i < SIZE; i++) {
-                    if (asignaciones[i][0] == c) {
-                        for (j = 0; j < DIM; j++) {
-                            suma[j] += BD[asignaciones[i][1]][j];
-                        }
-                        count++;
+            int id = omp_get_thread_num();
+            int num_threads = omp_get_num_threads();
+            int inicio = (SIZE / num_threads) * id;
+            int fin = (id == num_threads - 1) ? SIZE : inicio + (SIZE / num_threads);
+
+            for (int i = inicio; i < fin; i++) {
+                if (asignaciones[i][0] == c) {
+                    for (int j = 0; j < DIM; j++) {
+                        #pragma omp atomic
+                        suma[j] += BD[asignaciones[i][1]][j];
                     }
-                }
-    
-                // Actualizar centroide solo si hay elementos en el clúster
-                if (count > 0) {
-                    for (j = 0; j < DIM; j++) {
-                        centroide[c - 1][j] = suma[j] / count;
-                    }
+                    #pragma omp atomic
+                    count++;
                 }
             }
         }
+
+        if (count > 0) {
+            for (int j = 0; j < DIM; j++) {
+                centroide[c - 1][j] = suma[j] / count;
+            }
+        }
+    }
 
     } while (cambio); // Repetir mientras haya cambios en las asignaciones
 
