@@ -46,7 +46,7 @@ int main() {
     for (i = 0; i < SIZE; i++)
         usados[i] = 0;
 
-    // Seleccionar K elementos aleatorios como centroides iniciales
+    /*// Seleccionar K elementos aleatorios como centroides iniciales
     for (i = 0; i < K; i++) {
         int idx;
         do {
@@ -57,6 +57,12 @@ int main() {
         // Copiar el elemento como centroide
         for (j = 0; j < DIM; j++)
             centroide[i][j] = BD[idx][j];
+    }*/
+
+    for (i = 0; i < K; i++) {
+        for (j = 0; j < DIM; j++) {
+            centroide[i][j] = BD[i][j];
+        }
     }
 
     // Arreglo que guarda la asignación de cada elemento al clúster

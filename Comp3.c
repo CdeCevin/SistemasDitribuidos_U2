@@ -45,14 +45,23 @@ int main() {
     for (i = 0; i < SIZE; i++)
         usados[i] = 0;
 
+    /*// Seleccionar K elementos aleatorios como centroides iniciales
     for (i = 0; i < K; i++) {
         int idx;
         do {
             idx = rand() % SIZE;
         } while (usados[idx]);
         usados[idx] = 1;
+
+        // Copiar el elemento como centroide
         for (j = 0; j < DIM; j++)
             centroide[i][j] = BD[idx][j];
+    }*/
+
+    for (i = 0; i < K; i++) {
+        for (j = 0; j < DIM; j++) {
+            centroide[i][j] = BD[i][j];
+        }
     }
 
     int **asignaciones = (int **)malloc(sizeof(int *) * SIZE);
