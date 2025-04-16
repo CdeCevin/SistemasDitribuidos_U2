@@ -24,7 +24,7 @@ int main() {
     scanf("%d", &SIZE);
 
     clock_t inicio = clock();
-
+    omp_set_dynamic(0);
     omp_set_num_threads(T);
 
     BD = (float **)malloc(sizeof(float *) * SIZE);
