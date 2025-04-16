@@ -119,8 +119,16 @@ int main() {
         {
             int id = omp_get_thread_num();
             int num_threads = omp_get_num_threads();
-            int inicio = (SIZE / num_threads) * id;
-            int fin = (id == num_threads - 1) ? SIZE : inicio + (SIZE / num_threads);
+            int elementos_por_hilo = (SIZE / num_threads);
+            int inicio =  elementos_por_hilo * id;
+            int fin;
+
+            if(id==num_threads-1){
+                fin = SIZE;
+            }
+            else{
+                fin = inicio + elementos_por_hilo;
+            }
 
             for (int i = inicio; i < fin; i++) {
                 if (asignaciones[i][0] == c) {
