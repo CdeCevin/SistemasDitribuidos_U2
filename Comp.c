@@ -6,6 +6,7 @@
 
 #define DIM 20  // Número de dimensiones de cada elemento
 #define K 3     // Número de clústeres
+#define T 8     // Número de hilos para OpenMP
 
 // Función que calcula la distancia Euclidiana entre un elemento (fila) y un centroide
 float calcular_distancia(float *fila, float *centroide) {
@@ -21,9 +22,14 @@ int main() {
     int i, j, SIZE;
     float **BD;
 
+    scanf("%d", &SIZE); // Leer cantidad de elementos de la base de datos
+
     clock_t inicio = clock(); // Comenzar medición de tiempo de ejecución
 
-    scanf("%d", &SIZE); // Leer cantidad de elementos de la base de datos
+    
+
+    // Configura el número de hilos para la paralelización
+    omp_set_num_threads(T);
 
     // Reservar memoria para la base de datos
     BD = (float **)malloc(sizeof(float *) * SIZE);
