@@ -109,23 +109,29 @@ int main() {
         }
 
         // Recalcular los centroides como el promedio de los elementos asignados a cada uno
-        for (int c = 1; c <= K; c++) {
-            float suma[DIM] = {0}; // Suma acumulada para cada dimensión
-            int count = 0;         // Número de elementos en el clúster
-
-            for (i = 0; i < SIZE; i++) {
-                if (asignaciones[i][0] == c) {
-                    for (j = 0; j < DIM; j++) {
-                        suma[j] += BD[asignaciones[i][1]][j];
+        #pragma omp parallel 
+        {
+            int id = omp_get_thread_num(); // ID del hilo
+            int total_hilos = omp_get_num_threads(); // Total de hilos activos
+            
+            for (int c = 1; c <= K; c++) {
+                float suma[DIM] = {0}; // Suma acumulada para cada dimensión
+                int count = 0;         // Número de elementos en el clúster
+    
+                for (i = 0; i < SIZE; i++) {
+                    if (asignaciones[i][0] == c) {
+                        for (j = 0; j < DIM; j++) {
+                            suma[j] += BD[asignaciones[i][1]][j];
+                        }
+                        count++;
                     }
-                    count++;
                 }
-            }
-
-            // Actualizar centroide solo si hay elementos en el clúster
-            if (count > 0) {
-                for (j = 0; j < DIM; j++) {
-                    centroide[c - 1][j] = suma[j] / count;
+    
+                // Actualizar centroide solo si hay elementos en el clúster
+                if (count > 0) {
+                    for (j = 0; j < DIM; j++) {
+                        centroide[c - 1][j] = suma[j] / count;
+                    }
                 }
             }
         }
