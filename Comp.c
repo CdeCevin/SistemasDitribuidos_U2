@@ -93,7 +93,7 @@ int main() {
             int elementos_por_hilo = SIZE / num_threads;
             int inicio = elementos_por_hilo * id;
             int fin;
-             = (id == nthreads - 1) ? SIZE : ini + chunk;
+            
             if(id == num_threads-1){
                 fin = SIZE;
             }
