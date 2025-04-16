@@ -128,9 +128,10 @@ int main() {
     clock_t fin = clock(); // Finalizar medición de tiempo
 
     // Imprimir el número del clúster asignado a cada elemento
+    /*
     for (i = 0; i < SIZE; i++) {
         printf("%d\n", asignaciones[i][0]);
-    }
+    }*/
 
     // Mostrar el tiempo de ejecución en segundos
     double tiempo = (double)(fin - inicio) / CLOCKS_PER_SEC;
