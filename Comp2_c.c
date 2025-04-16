@@ -165,10 +165,10 @@ int main() {
     } while (cambio);
 
     clock_t fin = clock();
-    /*
+    
     for (i = 0; i < SIZE; i++)
         printf("%d\n", asignaciones[i][0]);
-    */
+    
     double tiempo = (double)(fin - inicio) / CLOCKS_PER_SEC;
     printf("Tiempo de ejecucion: %.4f segundos\n", tiempo);
 
