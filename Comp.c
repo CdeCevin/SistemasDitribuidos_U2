@@ -103,7 +103,7 @@ int main() {
             }
             int cambio_local = 0;
 
-            for (int i = ini; i < fin; i++) {
+            for (int i = inicio; i < fin; i++) {
                 float minDist = calcular_distancia(BD[i], centroide[0]);
                 int minIdx = 1;
 
