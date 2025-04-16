@@ -3,86 +3,75 @@
 #include <omp.h>
 #include <windows.h>  // Para medir el tiempo en Windows
 
-#define N 10  // Número de elementos en cada vector
-#define T 2   // Número de hilos para paralelización
+#define N 10000000  // Número de elementos en cada vector
+#define T 8   // Número de hilos para paralelización
 
 // Declaración de la función que genera un arreglo de números aleatorios
 int *genera_num_aleatorios(int cantidad_elementos);
 
 int main() {
-    printf("Ejecutando Tarea1.c\n");
+    printf("Ejecutando Tarea2.c\n");
     int i, *vec_a, *vec_b, res_final = 0;
     LARGE_INTEGER t1, t2, freq;  // Variables para medir el tiempo
     double real_time;
 
     // Generación de dos vectores con números aleatorios
     vec_a = genera_num_aleatorios(N);
+
     vec_b = genera_num_aleatorios(N);
+    int vec_c[] = {25,6,7,4,2};
+    int vec_d[] = {25,6,7,4,2};
 
-    // Mostrar el contenido del vector A
-    printf("Vector A: ");
-    for (i = 0; i < N; i++) {
-        printf("%d ", vec_a[i]);
-    }
-    printf("\n");
-
-    // Mostrar el contenido del vector B
-    printf("Vector B: ");
-    for (i = 0; i < N; i++) {
-        printf("%d ", vec_b[i]);
-    }
-    printf("\n");
-
-    // Medición del tiempo: obtener la frecuencia del contador
+ // Mostrar los vectores
+    /*printf("\nVector C: ");
+    for (i = 0; i < N; i++) printf("%d ", vec_a[i]);
+    printf("\nVector D: ");
+    for (i = 0; i < N; i++) printf("%d ", vec_b[i]);
+    printf("\n"); 
+*/
+    // Medición del tiempo
     QueryPerformanceFrequency(&freq);
-    // Inicia el contador de tiempo
     QueryPerformanceCounter(&t1);
 
-    // Configura el número de hilos para la paralelización
-    omp_set_num_threads(T);
-    
+    omp_set_num_threads(T);  // Configurar el número de hilos
+
+    // Crear un arreglo para almacenar los resultados parciales de cada hilo
+    int res_local[T];
+
+    // Inicializar resultados locales
+    for (i = 0; i < T; i++) {
+        res_local[i] = 0;
+    }
+
     // Región paralela donde se calcula el producto punto
-    #pragma omp parallel shared(vec_a, vec_b, res_final) firstprivate(i)
+    #pragma omp parallel
+    
     {
-        int res_local = 0; // Variable local para almacenar la suma parcial del hilo
-        int id = omp_get_thread_num(); // Obtener el ID del hilo actual
-        int total_hilos = omp_get_num_threads(); // Obtener el número total de hilos
+        int id = omp_get_thread_num(); // ID del hilo
+        int total_hilos = omp_get_num_threads(); // Total de hilos activos
 
-        // Indicar que el hilo ha comenzado su trabajo
-        printf("Hilo %d de %d ha comenzado su trabajo.\n", id, total_hilos);
-
-        // Distribución del ciclo entre hilos sin espera implícita al final
-        #pragma omp for nowait
-        for (i = 0; i < N; i++) {
-            // Cada hilo multiplica el elemento i de vec_a por el de vec_b y lo muestra
-            printf("Hilo %d multiplica: %d * %d = %d\n", id, vec_a[i], vec_b[i], vec_a[i] * vec_b[i]);
-            // Acumula el resultado de la multiplicación en la variable local
-
-            res_local += vec_a[i] * vec_b[i];
-            printf("Hilo %d suma parcial: %d\n", id, res_local);
-        }
-
-        // Mostrar el resultado parcial calculado por el hilo
-        printf("Hilo %d ha terminado con una suma parcial de %d.\n", id, res_local);
-
-        // Sección crítica para evitar condiciones de carrera al actualizar el resultado final
-        #pragma omp critical
-        {
-            res_final += res_local;
-            // Mostrar el resultado acumulado tras la suma del resultado parcial del hilo
-            printf("Hilo %d ha sumado su resultado parcial. Resultado acumulado: %d\n", id, res_final);
+        // Cada hilo procesa solo ciertas iteraciones del bucle
+        for (int i = id; i < N; i += total_hilos) {
+            //printf("Hilo %d multiplica: %d * %d = %d\n", id, vec_a[i], vec_b[i], vec_a[i] * vec_b[i]);
+            res_local[id] += vec_a[i] * vec_b[i]; // Suma parcial del hilo
+            //printf("Hilo %d suma parcial: %d\n", id, res_local[id]);
         }
     }
 
-    // Finalizar la medición del tiempo y calcular el tiempo real transcurrido
+    // Sumar todos los resultados parciales
+    for (i = 0; i < T; i++) {
+        res_final += res_local[i];
+    }
+
+    // Finalizar la medición del tiempo
     QueryPerformanceCounter(&t2);
     real_time = (double)(t2.QuadPart - t1.QuadPart) / freq.QuadPart;
 
-    // Imprimir el resultado final del producto punto y el tiempo de ejecución
+    // Imprimir el resultado final
     printf("\nResultado final del producto punto: %d", res_final);
     printf("\nTiempo Real = %f segundos\n", real_time);
 
-    // Liberar la memoria asignada para los vectores
+    // Liberar memoria
     free(vec_a);
     free(vec_b);
 
@@ -92,15 +81,11 @@ int main() {
 // Función para generar un arreglo de números aleatorios
 int *genera_num_aleatorios(int cantidad_elementos) {
     int i, *arr;
-    // Reservar memoria para el arreglo
     arr = (int *)malloc(sizeof(int) * cantidad_elementos);
-   
+  
 
-    // Llenar el arreglo con números aleatorios entre 1 y 100
     for (i = 0; i < cantidad_elementos; i++) {
-        arr[i] = (rand() % 100) + 1;
+        arr[i] = i;
     }
-
     return arr;
 }
-
