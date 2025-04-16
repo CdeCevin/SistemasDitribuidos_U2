@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <omp.h>
 #include <math.h>
 
 #define DIM 20  // Número de dimensiones de cada elemento
@@ -46,7 +47,7 @@ int main() {
     for (i = 0; i < SIZE; i++)
         usados[i] = 0;
 
-    // Seleccionar K elementos aleatorios como centroides iniciales
+    // Seleccionar K elementos aleatorios como centroides iniciales  
     for (i = 0; i < K; i++) {
         int idx;
         do {
