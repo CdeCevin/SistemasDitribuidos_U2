@@ -16,7 +16,7 @@ int main() {
 
     scanf("%d", &SIZE);
 
-    clock_t inicio = clock();
+    
     omp_set_dynamic(0);
     omp_set_num_threads(T);
 
@@ -29,7 +29,7 @@ int main() {
             scanf("%f", &BD[i][j]);
 
     srand(time(NULL));
-
+    clock_t inicio = clock();
     float **centroide = (float **)malloc(sizeof(float *) * K);
     for (i = 0; i < K; i++)
         centroide[i] = (float *)malloc(sizeof(float) * DIM);
@@ -168,8 +168,9 @@ int main() {
 
     clock_t fin = clock();
     
-    for (i = 0; i < SIZE; i++)
+    /*for (i = 0; i < SIZE; i++)
         printf("%d\n", asignaciones[i][0]);
+    */
     
     double tiempo = (double)(fin - inicio) / CLOCKS_PER_SEC;
     printf("Tiempo de ejecucion: %.4f segundos\n", tiempo);
