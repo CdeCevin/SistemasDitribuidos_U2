@@ -8,14 +8,7 @@
 #define K 3
 #define T 8
 
-float calcular_distancia(float *fila, float *centroide) {
-    float distancia = 0.0;
-    for (int i = 0; i < DIM; i++) {
-        float diff = fila[i] - centroide[i];
-        distancia += diff * diff;
-    }
-    return sqrt(distancia);
-}
+float calcular_distancia(float *fila, float *centroide);
 
 int main() {
     int i, j, SIZE;
@@ -194,4 +187,13 @@ int main() {
     free(centroide);
 
     return 0;
+}
+
+float calcular_distancia(float *fila, float *centroide) {
+    float distancia = 0.0;
+    for (int i = 0; i < DIM; i++) {
+        float diff = fila[i] - centroide[i];
+        distancia += diff * diff;
+    }
+    return sqrt(distancia);
 }
