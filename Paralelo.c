@@ -176,7 +176,7 @@ int main() {
     
     double tiempo = (double)(fin - inicio) / CLOCKS_PER_SEC;
     printf("Tiempo de ejecucion: %.4f segundos\n", tiempo);
-    print("Tiempo de ejecucion OpenMP: %.4f segundos\n", fn - in);
+    printf("Tiempo de ejecucion OpenMP: %.4f segundos\n", fn - in);
     for (i = 0; i < SIZE; i++) {
         free(BD[i]);
         free(asignaciones[i]);
