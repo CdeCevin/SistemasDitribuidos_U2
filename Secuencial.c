@@ -13,15 +13,7 @@
 #define DIM 20  // Número de dimensiones de cada elemento
 #define K 3     // Número de clústeres
 
-// Función que calcula la distancia Euclidiana entre un elemento (fila) y un centroide
-float calcular_distancia(float *fila, float *centroide) {
-    float distancia = 0.0;
-    for (int i = 0; i < DIM; i++) {
-        float diff = fila[i] - centroide[i];
-        distancia += diff * diff;
-    }
-    return sqrt(distancia);  // Distancia Euclidiana
-}
+float calcular_distancia(float *fila, float *centroide);
 
 int main() {
     int i, j, SIZE;
@@ -157,4 +149,14 @@ int main() {
     free(centroide);
 
     return 0;
+}
+
+// Función que calcula la distancia Euclidiana entre un elemento (fila) y un centroide
+float calcular_distancia(float *fila, float *centroide) {
+    float distancia = 0.0;
+    for (int i = 0; i < DIM; i++) {
+        float diff = fila[i] - centroide[i];
+        distancia += diff * diff;
+    }
+    return sqrt(distancia);  // Distancia Euclidiana
 }
