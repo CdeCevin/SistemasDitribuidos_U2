@@ -21,7 +21,6 @@ int main() {
 
     scanf("%d", &SIZE);
 
-    
     omp_set_dynamic(0);
     omp_set_num_threads(T);
 
