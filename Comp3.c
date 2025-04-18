@@ -9,7 +9,6 @@
 #define T 8
 
 float calcular_distancia(float *fila, float *centroide);
-void recalcularCentroides(int inicio, int fin, int c, int *asignaciones, float *BD, float *centroide);
 
 int main() {
     int i, j, SIZE;
@@ -114,7 +113,53 @@ int main() {
 
             // Fase 2: Recalcular centroides
             for (int c = 1; c <= K; c++) {
-                recalcularCentroides(inicio, fin, c, asignaciones, BD, centroide);
+                static float suma_global[K][DIM];
+                static int count_global[K];
+
+                // Solo un hilo inicializa los arrays estáticos compartidos
+                #pragma omp single
+                {
+                    for (int c2 = 0; c2 < K; c2++) {
+                        for (int d = 0; d < DIM; d++)
+                            suma_global[c2][d] = 0;
+                        count_global[c2] = 0;
+                    }
+                }
+
+                #pragma omp barrier
+
+                float suma_local[K][DIM] = {0};
+                int count_local[K] = {0};
+
+                for (int i = inicio; i < fin; i++) {
+                    int c = asignaciones[i][0] - 1;
+                    for (int j = 0; j < DIM; j++) {
+                        suma_local[c][j] += BD[i][j]; // Acumulación sin atomic
+                    }
+                    count_local[c]++;
+                }
+
+                #pragma omp critical
+                {
+                    for (int c = 0; c < K; c++) {
+                        for (int j = 0; j < DIM; j++) {
+                            suma_global[c][j] += suma_local[c][j]; // Un solo acceso seguro
+                        }
+                        count_global[c] += count_local[c];
+                    }
+                }
+
+                #pragma omp barrier
+
+                #pragma omp single
+                {
+                    if (count_global[c - 1] > 0) {
+                        for (int j = 0; j < DIM; j++) {
+                            centroide[c - 1][j] = suma_global[c - 1][j] / count_global[c - 1];
+                        }
+                    }
+                }
+
                 #pragma omp barrier
             }
         }
@@ -153,53 +198,3 @@ float calcular_distancia(float *fila, float *centroide) {
     }
     return sqrt(distancia);
 }
-void recalcularCentroides(int inicio, int fin, int c, int *asignaciones, float *BD, float *centroide) {
-    static float suma_global[K][DIM]; 
-    static int count_global[K];
-
-    float suma_local[K][DIM] = {0};
-    int count_local[K] = {0};
-
-    #pragma omp single
-    {
-        for (int c2 = 0; c2 < K; c2++) {
-            for (int d = 0; d < DIM; d++)
-                suma_global[c2][d] = 0;
-            count_global[c2] = 0;
-        }
-    }
-
-    #pragma omp barrier
-
-    for (int i = inicio; i < fin; i++) {
-        int c = asignaciones[i][0] - 1;
-        for (int j = 0; j < DIM; j++) {
-            suma_local[c][j] += BD[i][j];
-        }
-        count_local[c]++;
-    }
-
-    #pragma omp critical
-    {
-        for (int c = 0; c < K; c++) {
-            for (int j = 0; j < DIM; j++) {
-                suma_global[c][j] += suma_local[c][j];
-            }
-            count_global[c] += count_local[c];
-        }
-    }
-
-    #pragma omp barrier
-
-    #pragma omp single
-    {
-        for (int c = 0; c < K; c++) {
-            if (count_global[c] > 0) {
-                for (int j = 0; j < DIM; j++) {
-                    centroide[c][j] = suma_global[c][j] / count_global[c];
-                }
-            }
-        }
-    }
-}
-
