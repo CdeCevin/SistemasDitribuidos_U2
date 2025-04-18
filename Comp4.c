@@ -114,7 +114,7 @@ int main() {
 
             // Fase 2: Recalcular centroides
             for (int c = 1; c <= K; c++) {
-                recalcularCentroides(inicio, fin, asignaciones[SIZE][2], BD[SIZE][DIM], centroide[K][DIM]);
+                recalcularCentroides(inicio, fin, asignaciones, BD, centroide);
                 #pragma omp barrier
             }
         }
