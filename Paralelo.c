@@ -35,6 +35,7 @@ int main() {
 
     srand(time(NULL));
     clock_t inicio = clock();
+    double in = omp_get_wtime();
     float **centroide = (float **)malloc(sizeof(float *) * K);
     for (i = 0; i < K; i++)
         centroide[i] = (float *)malloc(sizeof(float) * DIM);
@@ -168,14 +169,14 @@ int main() {
     } while (cambio);
 
     clock_t fin = clock();
-    
+    double fn = omp_get_wtime();    
     for (i = 0; i < SIZE; i++)
         printf("%d\n", asignaciones[i][0]);
     
     
     double tiempo = (double)(fin - inicio) / CLOCKS_PER_SEC;
     printf("Tiempo de ejecucion: %.4f segundos\n", tiempo);
-
+    print("Tiempo de ejecucion OpenMP: %.4f segundos\n", fn - in);
     for (i = 0; i < SIZE; i++) {
         free(BD[i]);
         free(asignaciones[i]);
