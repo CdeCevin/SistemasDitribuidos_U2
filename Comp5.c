@@ -14,6 +14,7 @@
 #define T 8
 
 float calcular_distancia(float *fila, float *centroide);
+void recalcular_centroides(float **BD, int SIZE, int **asignaciones, float **centroide);
 
 int main() {
     int i, j, SIZE;
