@@ -169,12 +169,12 @@ int main() {
     } while (cambio);
 
     double fin = omp_get_wtime();
-        
+
     for (i = 0; i < SIZE; i++)
         printf("%d\n", asignaciones[i][0]);
     
     
-    printf("Tiempo de ejecucion OpenMP: %.4f segundos\n", fin - in);
+    printf("Tiempo de ejecucion: %.4f segundos\n", fin - in);
     for (i = 0; i < SIZE; i++) {
         free(BD[i]);
         free(asignaciones[i]);
