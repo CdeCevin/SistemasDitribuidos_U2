@@ -9,6 +9,7 @@
 #define T 8
 
 float calcular_distancia(float *fila, float *centroide);
+void recalcularCentroides(int K, int DIM, int SIZE, int asignaciones[SIZE][2], float BD[SIZE][DIM], float centroide[K][DIM]);
 
 int main() {
     int i, j, SIZE;
