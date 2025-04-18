@@ -1,5 +1,6 @@
 import subprocess
 import time
+import re
 
 # Archivos C
 programas = {
@@ -16,6 +17,7 @@ for nombre, archivo in programas.items():
         optimizacion = "-fopenmp -O3"
         subprocess.run(f"gcc {optimizacion} {archivo} -o {nombre}", shell=True, check=True)
         print(f"Compilado {nombre} exitosamente.")
+        time.sleep(1)  # Espera para evitar conflictos al compilar
     except subprocess.CalledProcessError:
         print(f"Error compilando {nombre}")
         exit(1)
@@ -23,22 +25,39 @@ for nombre, archivo in programas.items():
 # Resultados
 resultados = []
 
+# Regex para extraer el tiempo desde la salida
+regex_tiempo = re.compile(r"Tiempo de ejecucion:\s*([\d.]+)\s*segundos")
+
 # Ejecución y medición
 for bd in bases_datos:
-    print(f"\nEjecutando con base de datos: {bd}")
+    print(f"\n📂 Ejecutando con base de datos: {bd}")
     tiempos = {}
 
     for nombre in programas:
+        print(f"\n🔧 Ejecutando {nombre}...")
+        print("⏳ Esperando 10 segundos antes de continuar con la siguiente...\n")
+        time.sleep(10)
         try:
-            start = time.time()
-            subprocess.run(f"{nombre} < {bd}", shell=True, check=True)
-            end = time.time()
-            duracion = end - start
-            tiempos[nombre] = duracion
-            print(f"  {nombre}: {duracion:.4f} segundos")
+            result = subprocess.run(f"{nombre} < {bd}", shell=True, check=True, capture_output=True, text=True)
+            salida = result.stdout
+            print(salida)  # 👈 Imprime TODO lo que genera el programa en C
+
+            match = regex_tiempo.search(salida)
+            if match:
+                tiempo = float(match.group(1))
+                tiempos[nombre] = tiempo
+                print(f"✅ Tiempo capturado de {nombre}: {tiempo:.6f} segundos")
+            else:
+                print(f"⚠ No se encontró el tiempo en la salida de {nombre}")
+                tiempos[nombre] = None
         except subprocess.CalledProcessError:
-            print(f"Error ejecutando {nombre} con {bd}")
+            print(f"❌ Error ejecutando {nombre} con {bd}")
             tiempos[nombre] = None
+
+        time.sleep(2)  # Espera para liberar recursos entre ejecuciones
+
+    # Delay de 10 segundos después de procesar ambas versiones
+
 
     # Cálculo del tamaño de la BD
     with open(bd, "r") as f:
@@ -62,6 +81,9 @@ with open("resultados.txt", "w") as out:
     out.write("===================================\n")
     out.write("BD|\t\tSIZE|\tTs (s)|\tTp (s)|\tSpeedUp (Ts/Tp)|\n")
     for r in resultados:
-        out.write(f"{r['BD']}|\t{r['SIZE']}|\t{r['Ts']:.4f}|\t{r['Tp']:.4f}|\t{r['SpeedUp']:.2f}|\n")
+        if r["Tp"] and r["Ts"]:
+            out.write(f"{r['BD']}|\t{r['SIZE']}|\t{r['Ts']:.6f}|\t{r['Tp']:.6f}|\t{r['SpeedUp']:.2f}|\n")
+        else:
+            out.write(f"{r['BD']}|\t{r['SIZE']}|\tError de tiempo|\n")
 
 print("\n✅ Resultados guardados en 'resultados.txt'")
