@@ -1,3 +1,8 @@
+// Nombres Estudiantes: Kevin Olivares y Dominique Teillier
+// Nombre Profesor: Ricardo Barrientos Rojel
+// Fecha: 2025-04-28
+// Ramo: Sistemas Distribuidos secc-2
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -38,7 +43,7 @@ int main() {
     for (i = 0; i < SIZE; i++)
         usados[i] = 0;
 
-    /*// Seleccionar K elementos aleatorios como centroides iniciales
+    // Seleccionar K elementos aleatorios como centroides iniciales
     for (i = 0; i < K; i++) {
         int idx;
         do {
@@ -49,13 +54,9 @@ int main() {
         // Copiar el elemento como centroide
         for (j = 0; j < DIM; j++)
             centroide[i][j] = BD[idx][j];
-    }*/
-
-    for (i = 0; i < K; i++) {
-        for (j = 0; j < DIM; j++) {
-            centroide[i][j] = BD[i][j];
-        }
     }
+
+
 
     int **asignaciones = (int **)malloc(sizeof(int *) * SIZE);
     for (i = 0; i < SIZE; i++)
@@ -168,9 +169,9 @@ int main() {
 
     clock_t fin = clock();
     
-    /*for (i = 0; i < SIZE; i++)
+    for (i = 0; i < SIZE; i++)
         printf("%d\n", asignaciones[i][0]);
-    */
+    
     
     double tiempo = (double)(fin - inicio) / CLOCKS_PER_SEC;
     printf("Tiempo de ejecucion: %.4f segundos\n", tiempo);
