@@ -27,7 +27,7 @@ int main() {
     int i, j, SIZE;
     float **BD;
 
-    gettimeofday(&t1, 0);//Se comienza a medir el tiempo
+    gettimeofday(&y1, 0);//Se comienza a medir el tiempo
     clock_t inicio = clock(); // Comenzar medición de tiempo de ejecución
 
     scanf("%d", &SIZE); // Leer cantidad de elementos de la base de datos
@@ -135,7 +135,7 @@ int main() {
 
     double fin = omp_get_wtime(); // Obtener tiempo de ejecución
 
-    gettimeofday(&t2, 0);//Se termina de medir el tiempo
+    gettimeofday(&tm, 0);//Se termina de medir el tiempo
     // Imprimir el número del clúster asignado a cada elemento
     
     for (i = 0; i < SIZE; i++) {
