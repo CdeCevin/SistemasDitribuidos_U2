@@ -8,7 +8,6 @@
 #include <time.h>
 #include <math.h>
 #include <omp.h>
-#include <sys/time.h>
 
 #define DIM 20  // Número de dimensiones de cada elemento
 #define K 3     // Número de clústeres
@@ -27,9 +26,7 @@ int main() {
     int i, j, SIZE;
     float **BD;
 
-    gettimeofday(&y1, 0);//Se comienza a medir el tiempo
-    clock_t inicio = clock(); // Comenzar medición de tiempo de ejecución
-
+    double inicio = omp_get_wtime(); // Comenzar tiempo de ejecución
     scanf("%d", &SIZE); // Leer cantidad de elementos de la base de datos
 
     // Reservar memoria para la base de datos
@@ -133,9 +130,8 @@ int main() {
 
     } while (cambio); // Repetir mientras haya cambios en las asignaciones
 
-    double fin = omp_get_wtime(); // Obtener tiempo de ejecución
+    double fin = omp_get_wtime(); // Finalizar tiempo de ejecución
 
-    gettimeofday(&tm, 0);//Se termina de medir el tiempo
     // Imprimir el número del clúster asignado a cada elemento
     
     for (i = 0; i < SIZE; i++) {
@@ -144,9 +140,6 @@ int main() {
 
     
     // Mostrar el tiempo de ejecución en segundos
-    real_time = (t2.tv_sec - t1.tv_sec) + (float)(t2.tv_usec - t1.tv_usec)/1000000;
-    printf("\nTiempo Real = %f\n", real_time);
-
     printf("Tiempo de ejecucion: %.4f segundos\n", fin-inicio);
 
     // Liberar memoria dinámica utilizada
