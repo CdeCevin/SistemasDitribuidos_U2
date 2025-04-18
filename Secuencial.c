@@ -3,6 +3,7 @@
 // Fecha: 2025-04-28
 // Ramo: Sistemas Distribuidos secc-2
 
+//
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
