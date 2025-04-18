@@ -26,7 +26,7 @@ int main() {
     int i, j, SIZE;
     float **BD;
 
-    double inicio = omp_get_wtime(); // Comenzar tiempo de ejecución
+    double inicioT = omp_get_wtime(); // Comenzar tiempo de ejecución
     scanf("%d", &SIZE); // Leer cantidad de elementos de la base de datos
 
     // Reservar memoria para la base de datos
@@ -130,7 +130,7 @@ int main() {
 
     } while (cambio); // Repetir mientras haya cambios en las asignaciones
 
-    double fin = omp_get_wtime(); // Finalizar tiempo de ejecución
+    double finT = omp_get_wtime(); // Finalizar tiempo de ejecución
 
     // Imprimir el número del clúster asignado a cada elemento
     
@@ -140,7 +140,7 @@ int main() {
 
     
     // Mostrar el tiempo de ejecución en segundos
-    printf("Tiempo de ejecucion: %.4f segundos\n", fin-inicio);
+    printf("Tiempo de ejecucion: %.4f segundos\n", finT - inicioT);
 
     // Liberar memoria dinámica utilizada
     for (i = 0; i < SIZE; i++) {
