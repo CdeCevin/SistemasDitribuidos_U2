@@ -9,7 +9,7 @@
 #define T 8
 
 float calcular_distancia(float *fila, float *centroide);
-void recalcularCentroides(int K, int DIM, int SIZE, int asignaciones[SIZE][2], float BD[SIZE][DIM], float centroide[K][DIM]);
+void recalcularCentroides(int *asignaciones, float *BD, float *centroide);
 
 int main() {
     int i, j, SIZE;
@@ -114,7 +114,7 @@ int main() {
 
             // Fase 2: Recalcular centroides
             for (int c = 1; c <= K; c++) {
-                recalcularCentroides(K, DIM, SIZE, asignaciones[SIZE][2], BD[SIZE][DIM], centroide[K][DIM]);
+                recalcularCentroides(asignaciones[SIZE][2], BD[SIZE][DIM], centroide[K][DIM]);
                 #pragma omp barrier
             }
         }
@@ -153,8 +153,7 @@ float calcular_distancia(float *fila, float *centroide) {
     }
     return sqrt(distancia);
 }
-
-void recalcularCentroides(int K, int DIM, int SIZE, int asignaciones[SIZE][2], float BD[SIZE][DIM], float centroide[K][DIM]) {
+void recalcularCentroides(int *asignaciones, float *BD, float *centroide) {
     static float suma_global[K][DIM]; 
     static int count_global[K];
 
