@@ -203,7 +203,6 @@ int main() {
     for (i = 0; i < SIZE; i++) {
         free(BD[i]);
         free(asignaciones[i]);
-        free(asignaciones_previas[i]);
     }
     free(BD);
     free(asignaciones);
