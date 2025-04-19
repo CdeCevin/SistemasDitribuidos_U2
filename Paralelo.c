@@ -197,6 +197,7 @@ int main() {
         printf("%d\n", asignaciones[i][0]);
 
     printf("Tiempo de ejecucion: %.4f segundos\n", finT - inicioT);
+    
     // Liberacion de memoria
     for (i = 0; i < SIZE; i++) {
         free(BD[i]);
