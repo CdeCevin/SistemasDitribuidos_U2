@@ -46,18 +46,6 @@ It 95000	Secuencial	Paralelo	SpeedUp
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 --Mi amiguito ordendó y calculó el speedup
 
 Iteración | Secuencial | Paralelo | SpeedUp
