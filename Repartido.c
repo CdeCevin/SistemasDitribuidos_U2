@@ -1,4 +1,4 @@
-/ Nombres Estudiantes: Kevin Olivares y Dominique Teillier
+// Nombres Estudiantes: Kevin Olivares y Dominique Teillier
 // Nombre Profesor: Ricardo Barrientos Rojel
 // Fecha: 2025-04-28
 // Ramo: Sistemas Distribuidos secc-2
