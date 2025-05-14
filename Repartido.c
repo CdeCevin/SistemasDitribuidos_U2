@@ -156,8 +156,6 @@ int main() {
                 }
 
                 #pragma omp barrier
-
-                // ======== PERSONA 2 ==========
                 // Actualizar centroides
                 #pragma omp single
                 {
@@ -195,7 +193,6 @@ int main() {
     return 0;
 }
 
-// ======== PERSONA 1 ==========
 // Función de distancia euclidiana
 float calcular_distancia(float *fila, float *centroide) {
     float distancia = 0.0;
